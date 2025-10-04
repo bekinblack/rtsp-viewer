@@ -1,9 +1,6 @@
 package main
 
 import (
-	"bufio"
-	"io"
-	"regexp"
 	"stream-viewer/components"
 	"stream-viewer/model"
 	"stream-viewer/stream"
@@ -42,7 +39,7 @@ func main() {
 	var streamHigh *stream.Stream
 	var streamLow *stream.Stream
 
-	connectBtn := widget.NewButton("Подключится", func() {
+	connectBtn := widget.NewButton("Подключиться", func() {
 		urlHigh := "rtsp://test:test@localhost:8554/stream"
 		urlLow := "rtsp://test:test@localhost:8554/stream"
 
@@ -62,8 +59,8 @@ func main() {
 			return
 		}
 
-		go filterAndLogErrors(streamHigh.Err, logger)
-		go filterAndLogErrors(streamLow.Err, logger)
+		go logger.LogStdErr("High", streamHigh.Err)
+		go logger.LogStdErr("Low", streamLow.Err)
 
 		go viewerHigh.View(streamHigh.Out)
 		go viewerLow.View(streamLow.Out)
@@ -126,33 +123,4 @@ func main() {
 
 	w.ShowAndRun()
 
-}
-
-// filterAndLogErrors сканирует stderr и логирует только нужные сообщения.
-func filterAndLogErrors(r io.Reader, logger model.Logger) {
-	scanner := bufio.NewScanner(r)
-
-	// Регулярные выражения для поиска
-	authRe := regexp.MustCompile(`(?i)(401|403)`)
-	timeoutRe := regexp.MustCompile(`(?i)(timeout|timed out)`)
-	hostRe := regexp.MustCompile(`(?i)(connection refused|no route to host|host unreachable)`)
-	codecRe := regexp.MustCompile(`(?i)(unknown codec|could not find codec|decoder.*not found)`)
-
-	for scanner.Scan() {
-		line := scanner.Text()
-
-		switch {
-		case authRe.MatchString(line):
-			logger.Log("Ошибка авторизации (401/403) при подключении")
-		case timeoutRe.MatchString(line):
-			logger.Log("Таймаут подключения к RTSP-потоку")
-		case hostRe.MatchString(line):
-			logger.Log("Хост недоступен или сетевой сбой")
-		case codecRe.MatchString(line):
-			logger.Log("Не удалось декодировать поток — проверьте установку необходимых кодеков/библиотек")
-		}
-	}
-	if err := scanner.Err(); err != nil {
-		logger.Log("Ошибка чтения stderr: " + err.Error())
-	}
 }
