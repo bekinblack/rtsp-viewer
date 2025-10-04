@@ -1,0 +1,6 @@
+protocols: [tcp, udp]
+
+paths:
+  stream:
+    readUser: test
+    readPass: test
