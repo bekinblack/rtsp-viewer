@@ -1,10 +1,8 @@
-package components
+package ui
 
 import (
-	"errors"
 	"image"
 	"io"
-	"log"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
@@ -34,27 +32,14 @@ func (v *Viewer) View(r io.Reader) {
 	buf := make([]byte, v.width*v.height*4)
 	for {
 		if _, err := io.ReadFull(r, buf); err != nil {
-			switch {
-			case errors.Is(err, io.EOF):
-				v.refresh(make([]byte, v.width*v.height*4))
-			default:
-				log.Println("view: ", err)
-			}
-
+			copy(v.image.Pix, make([]byte, v.width*v.height*4))
+			fyne.Do(v.viewer.Refresh)
 			break
 		}
 
-		v.refresh(buf)
+		copy(v.image.Pix, buf)
+		fyne.Do(v.viewer.Refresh)
 	}
 }
 
-func (v *Viewer) refresh(buf []byte) {
-	copy(v.image.Pix, buf)
-	fyne.Do(func() {
-		v.viewer.Refresh()
-	})
-}
-
-func (v *Viewer) Content() fyne.CanvasObject {
-	return v.viewer
-}
+func (v *Viewer) Content() fyne.CanvasObject { return v.viewer }

@@ -11,7 +11,8 @@ type Stream struct {
 	Err io.Reader
 }
 
-func NewStream(cmd *exec.Cmd) (*Stream, error) {
+func NewStream(uri string, width, height int) (*Stream, error) {
+	cmd := NewFfmpeg(uri, width, height)
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
 		return nil, err

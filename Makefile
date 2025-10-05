@@ -17,7 +17,7 @@ stream2:
 
 
 run:
-	go run main.go
+	go run cmd/main.go
 
 dump:
 	rm project.md || echo "cleared"
