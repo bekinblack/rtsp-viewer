@@ -40,8 +40,8 @@ func main() {
 	var streamLow *stream.Stream
 
 	connectBtn := widget.NewButton("Подключиться", func() {
-		urlHigh := "rtsp://test:test@localhost:8554/stream"
-		urlLow := "rtsp://test:test@localhost:8554/stream"
+		urlHigh := "rtsp://test:test@localhost:8554/stream1"
+		urlLow := "rtsp://test:test@localhost:8554/stream2"
 
 		cmdHigh := stream.NewFfmpeg(urlHigh, 640, 480)
 		cmdLow := stream.NewFfmpeg(urlLow, 320, 240)
