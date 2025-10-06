@@ -25,6 +25,8 @@ func LogStream(from io.Reader, to TextSetter) {
 				fyne.Do(func() { to.SetText("Ошибка: доступ запрещен") })
 			case strings.Contains(text, "Error opening input"):
 				fyne.Do(func() { to.SetText("Ошибка: проверьте адрес стрима") })
+			case strings.Contains(text, "Unrecognized option"):
+				fyne.Do(func() { to.SetText("Ошибка: проверьте опции ffmpeg") })
 			default:
 				log.Println(text)
 			}
