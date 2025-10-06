@@ -1,6 +1,7 @@
 package stream
 
 import (
+	"errors"
 	"io"
 	"os/exec"
 )
@@ -37,5 +38,8 @@ func NewStream(uri string, width, height int) (*Stream, error) {
 }
 
 func (s *Stream) Close() error {
-	return s.cmd.Process.Kill()
+	if s != nil {
+		return s.cmd.Process.Kill()
+	}
+	return errors.New("Стрим не запущен")
 }
