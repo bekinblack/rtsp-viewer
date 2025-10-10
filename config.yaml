@@ -1,0 +1,6 @@
+ip: 89.110.116.109
+port: "8554"
+login: test
+password: dGVzdA==
+pathHigh: stream1
+pathLow: stream2
